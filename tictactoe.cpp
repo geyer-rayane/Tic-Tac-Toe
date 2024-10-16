@@ -71,12 +71,12 @@ public:
     while (true) {
         board.printBoard();
         int move;
-        std::cout << "Enter your move (1-9): ";
+        std::cout << "Enter your move (0-8): ";
         std::cin >> move;
 
         // Calculate row and column from move
-        int row = (move - 1) / 3;
-        int col = (move - 1) % 3;
+        int row = move / 3;
+        int col = move % 3;
 
         if (board.makeMove(row, col, currentPlayer)) {
             if (board.isWin(currentPlayer)) {
