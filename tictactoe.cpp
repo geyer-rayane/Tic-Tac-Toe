@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
 
 class Board {
 private:
@@ -88,43 +91,71 @@ public:
     Game() : currentPlayer('X'), aiPlayer('O') {}
 
     void play() {
-        while (true) {
-            board.printBoard();
-            int move;
-            if (currentPlayer == 'X') {
-                std::cout << "Enter your move (0-8): ";
-                if (!(std::cin >> move)) {
-                    std::cout << "Invalid input. Please enter a number.\n";
-                    std::cin.clear();
-                    std::cin.ignore(10000, '\n');
-                    continue;
+        sf::RenderWindow window(sf::VideoMode(600, 600), "Tic-Tac-Toe");
+        sf::Font font;
+        font.loadFromFile("arial.ttf"); // load a font
+
+        sf::Text text[9];
+        for (int i = 0; i < 9; i++) {
+            text[i].setFont(font);
+            text[i].setCharacterSize(100);
+            text[i].setPosition(200 + (i % 3) * 100, 100 + (i / 3) * 100);
+        }
+
+        sf::RectangleShape rect[9];
+        for (int i = 0; i < 9; i++) {
+            rect[i].setSize(sf::Vector2f(100, 100));
+            rect[i].setPosition(200 + (i % 3) * 100, 100 + (i / 3) * 100);
+            rect[i].setFillColor(sf::Color::White);
+            rect[i].setOutlineColor(sf::Color::Black);
+            rect[i].setOutlineThickness(2);
+        }
+
+        while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    int x = event.mouseButton.x;
+                    int y = event.mouseButton.y;
+
+                    int row = (y - 100) / 100;
+                    int col = (x - 200) / 100;
+
+                    if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+                        int move = row * 3 + col;
+                        if (board.isValidMove(row, col)) {
+                            board.makeMove(row, col, 'X');
+                            text[move].setString("X");
+
+                            if (board.isWin('X')) {
+                                std::cout << "Player X wins!\n";
+                                window.close();
+                            }
+
+                            int aiMove = getAiMove();
+                            int aiRow = aiMove / 3;
+                            int aiCol = aiMove % 3;
+                            board.makeMove(aiRow, aiCol, 'O');
+                            text[aiMove].setString("O");
+
+                            if (board.isWin('O')) {
+                                std::cout << "Player O wins!\n";
+                                window.close();
+                            }
+                        }
+                    }
                 }
-                if (move < 0 || move > 8) {
-                    std::cout << "Invalid move. Please enter a number between 0 and 8.\n";
-                    continue;
-                }
-            } else {
-                move = getAiMove();
-                std::cout << "AI move: " << move << std::endl;
             }
 
-            // Calculate row and column from move
-            int row = move / 3;
-            int col = move % 3;
-
-            if (board.makeMove(row, col, currentPlayer)) {
-                if (board.isWin(currentPlayer)) {
-                    board.printBoard();
-                    std::cout << "Player " << currentPlayer << " wins!\n";
-                    return;
-                }
-
-                // Switch player
-                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-
-            } else {
-                std::cout << "Invalid move. Try again.\n";
+            window.clear();
+            for (int i = 0; i < 9; i++) {
+                window.draw(rect[i]);
+                window.draw(text[i]);
             }
+            window.display();
         }
     }
 
@@ -185,6 +216,7 @@ public:
         }
     }
 };
+
 
 int main() {
     Game game;
