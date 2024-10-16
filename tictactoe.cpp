@@ -10,17 +10,20 @@ public:
         board.resize(3, std::vector<char>(3, ' '));
     }
 
-    void printBoard() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                std::cout << board[i][j] << " | ";
-            }
-            std::cout << "\n";
-            if (i < 2) {
-                std::cout << "---+---+---\n";
-            }
+   void printBoard() {
+    std::cout << "  0 | 1 | 2\n";
+    std::cout << "---+---+---\n";
+    for (int i = 0; i < 3; i++) {
+        std::cout << i << " ";
+        for (int j = 0; j < 3; j++) {
+            std::cout << board[i][j] << " | ";
+        }
+        std::cout << "\n";
+        if (i < 2) {
+            std::cout << "---+---+---\n";
         }
     }
+}
 
     bool isValidMove(int row, int col) {
         return board[row][col] == ' ';
@@ -100,3 +103,4 @@ int main() {
     game.play();
     return 0;
 }
+
