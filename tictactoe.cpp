@@ -93,13 +93,14 @@ public:
     void play() {
         sf::RenderWindow window(sf::VideoMode(600, 600), "Tic-Tac-Toe");
         sf::Font font;
-        font.loadFromFile("arial.ttf"); // load a font
+        //font.loadFromFile("arial.ttf"); // load a font
 
         sf::Text text[9];
         for (int i = 0; i < 9; i++) {
             text[i].setFont(font);
             text[i].setCharacterSize(100);
-            text[i].setPosition(200 + (i % 3) * 100, 100 + (i / 3) * 100);
+            text[i].setPosition(220 + (i % 3) * 100, 100 + (i / 3) * 100);
+            text[i].setFillColor(sf::Color::Black); //ssssss
         }
 
         sf::RectangleShape rect[9];
@@ -117,37 +118,34 @@ public:
                 if (event.type == sf::Event::Closed)
                     window.close();
 
-                if (event.type == sf::Event::MouseButtonPressed) {
-                    int x = event.mouseButton.x;
-                    int y = event.mouseButton.y;
+             if (event.type == sf::Event::MouseButtonPressed) {
+    int x = event.mouseButton.x;
+    int y = event.mouseButton.y;
 
-                    int row = (y - 100) / 100;
-                    int col = (x - 200) / 100;
+    int row = (y - 100) / 100;
+    int col = (x - 200) / 100;
 
-                    if (row >= 0 && row < 3 && col >= 0 && col < 3) {
-                        int move = row * 3 + col;
-                        if (board.isValidMove(row, col)) {
-                            board.makeMove(row, col, 'X');
-                            text[move].setString("X");
+    if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+        int move = row * 3 + col;
+        if (board.isValidMove(row, col)) {
+            board.makeMove(row, col, 'X');
+            text[move].setString("X");
+            rect[move].setFillColor(sf::Color::Blue); // Set rectangle color to blue for player X
 
-                            if (board.isWin('X')) {
-                                std::cout << "Player X wins!\n";
-                                window.close();
-                            }
+            if (board.isWin('X')) {
+                std::cout << "Player X wins!\n";
+                window.close();
+            }
 
-                            int aiMove = getAiMove();
-                            int aiRow = aiMove / 3;
-                            int aiCol = aiMove % 3;
-                            board.makeMove(aiRow, aiCol, 'O');
-                            text[aiMove].setString("O");
-
-                            if (board.isWin('O')) {
-                                std::cout << "Player O wins!\n";
-                                window.close();
-                            }
-                        }
-                    }
-                }
+            int aiMove = getAiMove();
+            int aiRow = aiMove / 3;
+            int aiCol = aiMove % 3;
+            board.makeMove(aiRow, aiCol, 'O');
+            text[aiMove].setString("O");
+            rect[aiMove].setFillColor(sf::Color::Red); // Set rectangle color to red for IA O
+        }
+    }
+}
             }
 
             window.clear();
