@@ -68,29 +68,31 @@ public:
     Game() : currentPlayer('X') {}
 
     void play() {
-        while (true) {
-            board.printBoard();
-            int row, col;
-            std::cout << "Enter row (0-2): ";
-            std::cin >> row;
-            std::cout << "Enter column (0-2): ";
-            std::cin >> col;
+    while (true) {
+        board.printBoard();
+        int move;
+        std::cout << "Enter your move (1-9): ";
+        std::cin >> move;
 
-            if (board.makeMove(row, col, currentPlayer)) {
-                if (board.isWin(currentPlayer)) {
-                    board.printBoard();
-                    std::cout << "Player " << currentPlayer << " wins!\n";
-                    return;
-                }
+        // Calculate row and column from move
+        int row = (move - 1) / 3;
+        int col = (move - 1) % 3;
 
-                // Switch player
-                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-
-            } else {
-                std::cout << "Invalid move. Try again.\n";
+        if (board.makeMove(row, col, currentPlayer)) {
+            if (board.isWin(currentPlayer)) {
+                board.printBoard();
+                std::cout << "Player " << currentPlayer << " wins!\n";
+                return;
             }
+
+            // Switch player
+            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+
+        } else {
+            std::cout << "Invalid move. Try again.\n";
         }
     }
+}
 };
 
 int main() {
